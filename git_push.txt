@@ -1,1 +1,4 @@
-test
+git status
+git add .
+git commit -m "訊息"
+git push origin main
