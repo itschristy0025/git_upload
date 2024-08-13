@@ -28,10 +28,7 @@ public class Sales extends Employee {
 
 	@Override
 	public void printInfo() {
-		System.out.printf("薪資單\n");
-		System.out.printf("姓名: %s 工作部門: %s\n", getName(), getDepartment());
-		System.out.printf("月薪: %s\n", getSalary());
-		System.out.printf("業績獎金: %s\n", getBouns());
-		System.out.printf("總計: %s\n", payment);
+		super.printInfo();
+		System.out.printf("業績獎金: %s\n總計: %s\n", getBouns(), payment);
 	}
 }

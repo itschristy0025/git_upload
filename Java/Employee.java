@@ -1,6 +1,6 @@
 package com.cathaybk.practice.nt50350.b;
 
-public abstract class Employee implements IWork, Comparable<Employee> {
+public class Employee implements IWork {
 	private String name;
 	private String department;
 	private int salary;
@@ -35,9 +35,18 @@ public abstract class Employee implements IWork, Comparable<Employee> {
 	public void setSalary(int salary) {
 		this.salary = salary;
 	}
-	public int compareTo(Employee order) {
-		return this.department.compareTo(order.department);
+
+	@Override
+	public void printInfo() {
+	 System.out.printf("薪資單\n姓名: %s 工作部門: %s\n月薪: %s\n",getName(),getDepartment(),getSalary());
 		
-	}
+	} 
+
+//	@Override
+//	public int compareTo(Employee o) {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	} HW
+
 
 }

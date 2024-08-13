@@ -11,11 +11,14 @@ public class practice2 {
 
 		Set<Integer> orderSet = new TreeSet<>();
 		Set<Integer> unorderSet = new HashSet<>();
-		for (int i = 0; i < 6; i++) {
+		
+		while(unorderSet.size() < 6) {
 			int randomLotto = randNum.nextInt(49) + 1;
+			unorderSet.add(randomLotto);		
 			orderSet.add(randomLotto);
-			unorderSet.add(randomLotto);
 		}
+		
+		
 
 		// 排序前
 		StringBuilder sb = new StringBuilder();
@@ -34,26 +37,3 @@ public class practice2 {
 	}
 
 }
-
-////		System.out.println(StringUtils.strip(orderSet.toString(),"[]"));
-//System.out.println("排序前: " + orderSet.toString());
-//System.out.println("排序後: "+ unorderSet);
-//
-//while () {}
-//System.out.printf("排序後:%s ", eachunorderSet.);
-//
-//	}
-
-//			
-//			if (lottomap.contains(randomLotto))
-//			lottomap.add(randomLotto);
-//			System.out.println(lottomap);
-//
-
-//Map<Integer,Integer> lottomap =new HashMap<>();
-//
-//for (int i=0;lottomap.size()<6; i++) {
-//	int randomLotto =randNum.nextInt(49)+1;
-//	lottomap.put(randomLotto, i);
-//}
-//System.out.println(lottomap.get(lottomap));
