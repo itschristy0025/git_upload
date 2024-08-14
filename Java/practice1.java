@@ -5,7 +5,7 @@ public class practice1 {
 
 		for (int  k=1 ; k < 10; k++) {
 			for (int i = 2; i < 10; i++) {
-				System.out.printf("%s*%s=%s\t", i, k, (i*k)); //答案對齊
+				System.out.printf("%s*%s=%2s\t", i, k, (i*k)); 
 			}
 			System.out.println();
 		}

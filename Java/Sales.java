@@ -1,7 +1,7 @@
 package com.cathaybk.practice.nt50350.b;
 
 public class Sales extends Employee {
-	private int bouns;
+	private int bouns; 
 	private int payment;
 
 	public int getBouns() {

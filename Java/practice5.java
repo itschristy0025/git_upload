@@ -7,8 +7,16 @@ public class practice5 {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 
-		System.out.print("請輸入介於1到12間的整數");
+		System.out.print("請輸入介於1到12間的整數"); 
 		int month = scanner.nextInt();
+		
+		// 防呆機制，避免輸入其他數字
+		if(month < 1 || month >12) {
+			System.out.println("輸入錯誤，請輸入介於1到12間的整數");
+			scanner.close();
+			return;
+		}
+		
 		// 取當前的時間
 		Calendar calender = Calendar.getInstance(); // Calendar是抽象類別不能new物件，這裡其實是用子類別GregorianCalendar new
 		int year = calender.get(Calendar.YEAR);
@@ -30,7 +38,7 @@ public class practice5 {
 		// 開始前的空格
 		int firstday = calender.get(Calendar.DAY_OF_WEEK); // Calender.SUNDAY=1...
 		for (int i = Calendar.SUNDAY; i < firstday; i++) {
-			System.out.printf("   ");
+			System.out.printf("%3s"," "); //改成%s 更容易對齊
 		}
 
 		// 製作當月的數字

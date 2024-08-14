@@ -8,13 +8,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class practice6_2 {
 	public static void main(String[] args) {
@@ -24,7 +22,9 @@ public class practice6_2 {
 
 		try (BufferedReader br = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8))) {
 			String headLine;
-			if ((headLine = br.readLine()) != null) {
+			if ((headLine = br.readLine()) == null) {
+				System.out.println("no header");
+			} else {
 				header = headLine.split(",");
 
 				String line;
@@ -41,23 +41,15 @@ public class practice6_2 {
 					}
 				}
 
-			} else {
-				System.out.println("no header");
 			}
-			// 資料排序
-			Collections.sort(dataList, new Comparator<Map<String, String>>() {
-
-				@Override
-				public int compare(Map<String, String> o1, Map<String, String> o2) {
-					return o1.get("Manufacturer").compareTo(o2.get("Manufacturer"));
-				}
-			});
 
 			// 先建立一個Map,用來裝最後分組的結果 {Acura,[{__=__,__=__},{__=__,__=__}(這就是carslist)]}
+			// 不要改變原本的資料結構 dataList
 			Map<String, List<Map<String, String>>> result = new TreeMap<>(); // 有排序要用Treelist
 
 			for (Map<String, String> carsMap : dataList) {
 				String manufacturer = carsMap.get("Manufacturer");
+//				result.containsKey(manufacturer); 可以改成這樣判斷
 				List<Map<String, String>> carsList = result.get(manufacturer); // 這邊是去判斷manufacturer有無出現過
 				if (carsList == null) {
 					carsList = new ArrayList<>();
@@ -65,23 +57,21 @@ public class practice6_2 {
 				}
 				carsList.add(carsMap);
 			}
-			System.out.printf("%-5s %-5s %-5s %5s\n","Manufacturer","TYPE","Min.PRICE","Price");
+			System.out.printf("%-5s %-5s %-5s %5s\n", "Manufacturer", "TYPE", "Min.PRICE", "Price");
 
 			BigDecimal totalminPrice = BigDecimal.ZERO;
 			BigDecimal totalPrice = BigDecimal.ZERO;
-			for (Entry<String, List<Map<String, String>>> entry : result.entrySet()) { // test
+			for (Entry<String, List<Map<String, String>>> entry : result.entrySet()) {
 
 				List<Map<String, String>> carList = entry.getValue();
-
-
 
 				BigDecimal etotalminPrice = BigDecimal.ZERO; // 進入下一個新迴圈時，又重新開始計算
 				BigDecimal etotalPrice = BigDecimal.ZERO;
 
-				for (Map<String, String> carMap : carList) { //entry不同時就會跳出迴圈
+				for (Map<String, String> carMap : carList) { // entry不同時就會跳出迴圈
 					BigDecimal minPrice = new BigDecimal(carMap.get("Min.Price"));
 					BigDecimal Price = new BigDecimal(carMap.get("Price"));
-	
+
 					etotalminPrice = etotalminPrice.add(minPrice);
 					etotalPrice = etotalPrice.add(Price);
 					totalminPrice = totalminPrice.add(minPrice);

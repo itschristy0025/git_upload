@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +23,13 @@ public class practice6 {
 		List<Map<String, String>> dataList = new ArrayList<>();
 		String[] header = null;
 
-		try (BufferedReader br = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8));
+				BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile, StandardCharsets.UTF_8))) {
 			String headLine = br.readLine();
-			if (headLine != null) {
+			if (headLine == null) {
+				System.out.print("no headerline found.");
+				return;
+			} else {
 				header = headLine.split(",");
 				String line;
 				while ((line = br.readLine()) != null) {
@@ -39,8 +44,6 @@ public class practice6 {
 						System.out.println("Skipping malformed line:" + line);
 					}
 				}
-			} else {
-				System.out.print("no headerline found.");
 			}
 
 			// 資料排序
@@ -48,31 +51,36 @@ public class practice6 {
 
 				@Override
 				public int compare(Map<String, String> o1, Map<String, String> o2) {
-					return o2.get("Price").compareTo(o1.get("Price"));
+
+					BigDecimal price1 = new BigDecimal(o1.get("Price"));
+					BigDecimal price2 = new BigDecimal(o2.get("Price"));
+					return price2.compareTo(price1);
 				}
 			});
 
 			// 資料輸出csv檔
-			try (
-					BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile, StandardCharsets.UTF_8))) {
-				// 寫入表頭
-				if (header != null) {
-					bw.write(String.join(",", header));
+
+			// 寫入表頭
+			if (header == null) {
+				System.out.println("There is no headline");
+				return;
+			} else {
+				StringBuilder sb = new StringBuilder();
+				
+				sb.append(header[0]).append(",").append(header[1]).append(",").append(header[2]).append(",")
+				.append(header[3]);
+				bw.write(sb.toString()); // 不建議用join，建議改使用StringBuilder
+				bw.newLine();
+				sb.setLength(0);
+				// 寫入數據
+				for (Map<String, String> data : dataList) {
+					sb.append(data.get("Manufacturer")).append(",").append(data.get("Type")).append(",")
+					.append(data.get("Min.Price")).append(",").append(data.get("Price"));
+					bw.write(sb.toString()); 
 					bw.newLine();
-					// 寫入數據
-					for (Map<String, String> data : dataList) {
-						List<String> inputList = new ArrayList<>();
-						inputList.add(data.get("Price"));
-						inputList.add(data.get("Type"));
-						inputList.add(data.get("Min.Price"));
-						inputList.add(data.get("Price"));
-						bw.write(String.join(",", inputList));
-						bw.newLine();
-					}
-					System.out.println("成功");
-				} else {
-					System.out.println("There is no headline");
+					sb.setLength(0);
 				}
+				System.out.println("csv檔輸出成功");
 			}
 
 		} catch (FileNotFoundException e) {

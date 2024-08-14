@@ -40,13 +40,12 @@ public class Employee implements IWork {
 	public void printInfo() {
 	 System.out.printf("薪資單\n姓名: %s 工作部門: %s\n月薪: %s\n",getName(),getDepartment(),getSalary());
 		
-	} 
+	}
 
-//	@Override
-//	public int compareTo(Employee o) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	} HW
+
+
+
+
 
 
 }

@@ -1,85 +1,89 @@
 package com.cathaybk.practice.nt50350.b;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 public class happydog {
+	public static void main(String[] args) {
+		File inputFile = new File("C:\\Users\\Admin\\Downloads\\Java評量_第6題cars.csv");
+		String[] header = null;
+		List<Map<String, String>> dataList = new ArrayList<>();
 
-	public static void doQuery() {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    Scanner scanner = null;
+		try (BufferedReader br = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8))) {
+			String headLine;
+			if ((headLine = br.readLine()) == null) {
+				System.out.println("no header");
+			} else {
+				header = headLine.split(",");
 
-	    try {
-	        // 建立資料庫連線
-	        conn = DriverManager.getConnection(conn_url, username, password);
-	        conn.setAutoCommit(false);
+				String line;
+				while ((line = br.readLine()) != null) {
+					String[] values = line.split(",");
+					if (header.length == values.length) {
+						Map<String, String> eachMap = new HashMap<>();
+						for (int i = 0; i < header.length; i++) {
+							eachMap.put(header[i], values[i]);
+						}
+						dataList.add(eachMap);
+					} else {
+						System.out.println("Skipping malformed line:" + line);
+					}
+				}
 
-	        // 讀取用戶輸入
-	        scanner = new Scanner(System.in);
-	        System.out.println("請輸入製造商:");
-	        String manufacturer = scanner.next();
-	        System.out.println("請輸入類型:");
-	        String type = scanner.next();
+				/*
+				 * collect 將流的結果收集到某種集合中(無法確定流的順序，所以在流的地方做排序就好) Collectors.groupingBy收集器，收集了三個參數
+				 * 1.分組依據 2.Map型態 3.下游收集器 item -> item.get("Manufacturer") 一種lambda表示式
+				 * item是流中的每個元素（在這裡是每個 Map<String, String>）
+				 * 
+				 */
 
-	        // 設置 SQL 查詢
-	        String insert_sql = "SELECT * FROM cars WHERE MANUFACTURER = ? AND TYPE = ?";
-	        pstmt = conn.prepareStatement(insert_sql);
-	        pstmt.setString(1, manufacturer);
-	        pstmt.setString(2, type);
-	        
-	        // 執行查詢
-	        rs = pstmt.executeQuery();
+				Map<String, List<Map<String, String>>> listMap = dataList.stream() // 將列表轉換成流(一種Java8的引入特性，可以更方便的處理集合中的數據)
+						.collect(Collectors.groupingBy(item -> item.get("Manufacturer"), TreeMap::new,
+								Collectors.toList()));
 
-	        // sb 連接字串
-	        StringBuilder sb = new StringBuilder();
-	        sb.append("查詢結果:");
+				System.out.printf("%-5s %-5s %-5s %5s\n", "Manufacturer", "TYPE", "Min.PRICE", "Price");
 
-	        if (rs != null) {
-	            while (rs.next()) {
-	                sb.append("製造商:").append(rs.getString("MANUFACTURER"))
-	                  .append("，類型:").append(rs.getString("TYPE"))
-	                  .append("，底價:").append(rs.getString("MIN_PRICE"))
-	                  .append("，售價:").append(rs.getString("PRICE"))
-	                  .append("\n");
-	            }
-	            System.out.println(sb.toString());
-	        } else {
-	            System.out.println("查無結果");
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        // 關閉 ResultSet
-	        if (rs != null) {
-	            try {
-	                rs.close();
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
+				BigDecimal summ = BigDecimal.ZERO;
+				BigDecimal sum = BigDecimal.ZERO;
+				for (String aa : listMap.keySet()) {
+					BigDecimal totalm = BigDecimal.ZERO;
+					BigDecimal total = BigDecimal.ZERO;
+					for (Map<String, String> bb : listMap.get(aa)) {
+						
+						System.out.printf("%-10s %-10s %6s %s\n", bb.get("Manufacturer"), bb.get("Type"),
+								bb.get("Min.Price"), bb.get("Price"));
 
-	        // 關閉 PreparedStatement
-	        if (pstmt != null) {
-	            try {
-	                pstmt.close();
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
+						BigDecimal minprice = new BigDecimal(bb.get("Min.Price"));
+						BigDecimal price = new BigDecimal(bb.get("Price"));
+						
+						totalm = totalm.add(minprice); 
+						total = total.add(price);	
+					}
+					System.out.printf("小計%25s %3s\n", totalm, total);
+					summ= summ.add(totalm);
+					sum = sum.add(total);
+				}
+				System.out.printf("合計%25s %3s\n", summ, sum);
+			}
 
-	        // 關閉 Connection
-	        if (conn != null) {
-	            try {
-	                conn.close();
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
+		} catch (FileNotFoundException e) {
+			System.out.println("File Not Found");
+			e.printStackTrace();
+		} catch (IOException e) {
 
-	        // 關閉 Scanner
-	        if (scanner != null) {
-	            scanner.close();
-	        }
-	    }
+			e.printStackTrace();
+		}
 	}
 
 }

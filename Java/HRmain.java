@@ -1,6 +1,5 @@
 package com.cathaybk.practice.nt50350.b;
 
-import java.beans.beancontext.BeanContext;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,10 +8,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class HRmain {
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) {
 		List<Employee> employeeList = new ArrayList<>();
 		employeeList.add(new Sales("張志城", "信用卡部", 35000, 6000));
 		employeeList.add(new Sales("林大鈞", "信用卡部", 38000, 4000));
@@ -23,36 +24,50 @@ public class HRmain {
 		for (Employee employee : employeeList) {
 			employee.printInfo();
 
-			File file = new File("C:\\Users\\Admin\\Desktop\\HRmain.csv");
-
-			try (FileOutputStream out = new FileOutputStream(file);
-					OutputStreamWriter osw = new OutputStreamWriter(out, StandardCharsets.UTF_8);
-					BufferedWriter bw = new BufferedWriter(osw)) {
-				
-				// 寫入UTF-8
-				byte[] uft8bom = { (byte) 0xef, (byte) 0xbb, (byte) 0xbf };
-				out.write(uft8bom);
-				
-				//寫入name payment
-				for (Employee writeempEmployee : employeeList) {
-					if(writeempEmployee instanceof Sales) {
-						Sales sales = (Sales) writeempEmployee;
-						bw.write(writeempEmployee.getName()+ "," +sales.getPayment());
-						bw.newLine();
-					}else {
-						Supervisor supervisor = (Supervisor)writeempEmployee;
-						bw.write(writeempEmployee.getName()+ ","+supervisor.getPayment());
-						bw.newLine();
-					}
-					bw.flush();
-				}
-
-			}catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
 		}
 
+		File file = new File("C:\\Users\\Admin\\Desktop\\HRmain.csv");
+
+		// UTF-8 BOM 有些文字編輯器需要透過BOM來識別文件是UTF-8編碼
+		byte[] utf8bom = { (byte) 0xef, (byte) 0xbb, (byte) 0xbf };
+
+		// 有中文的檔案轉檔不能只用BufferedWriter,FileWriter
+		try (FileOutputStream fos = new FileOutputStream(file);
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
+			
+		Collections.sort(employeeList, new Comparator<Employee>() {
+
+			@Override
+			public int compare(Employee o1, Employee o2) {
+				
+				return o2.getDepartment().compareTo(o1.getDepartment());
+			}
+		});	
+
+			// 寫入BOM到文件開頭
+			fos.write(utf8bom);
+
+			// 寫入name,payment
+			
+			for (Employee employee : employeeList) {
+			String name = employee.getName();
+				if (employee instanceof Sales) {
+					Sales sales = (Sales) employee;
+					bw.write(name+ "," + sales.getPayment());
+					bw.newLine();
+				} else {
+					Supervisor supervisor = (Supervisor) employee;
+					bw.write(name + "," + supervisor.getPayment());
+					bw.newLine();
+				}
+				bw.flush();
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 }
