@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript評量第二題</title>
+    <script>
+        window.onload = function () {
+            let serial = 1 //序號初始值  
+
+            // 新增鍵新增
+            document.querySelector('#insert').onclick = function () {
+                let manu = document.querySelector('#manu').value;
+                let type = document.querySelector('#type').value;
+                let lowerprice = document.querySelector('#lowerprice').value;
+                let price = document.querySelector('#price').value;
+
+                // 條件判斷
+                if (!manu || !type) {
+                    alert('製造商與類別不可為空');
+                    return;
+                }
+
+
+                // 建立行
+                const restable = document.querySelector('.ressection');
+                const tr1 = restable.insertRow();  //用這個方法class都會是tr
+                tr1.setAttribute("class", 'tr1');
+
+
+                // 建立列
+                const td1 = tr1.insertCell(0);
+                const td2 = tr1.insertCell(1);
+                const td3 = tr1.insertCell(2);
+                const td4 = tr1.insertCell(3);
+                const td5 = tr1.insertCell(4);
+                const td6 = tr1.insertCell(5);
+                const td7 = tr1.insertCell(6);
+
+                // 建radio 
+                const rad = document.createElement('input');
+                rad.setAttribute('type', 'radio');
+                rad.setAttribute('name', 'radio') // radio只能單選
+
+                // 建buttom
+                const del = document.createElement('button');
+                del.setAttribute('class', 'del');
+                del.innerHTML = "刪除";
+
+                // 列內容賦值
+                td1.appendChild(rad);
+                td7.appendChild(del);
+                td3.innerHTML = manu;
+                td2.innerHTML = serial++; //用全域變數後綴遞增(先給值再加)
+                td4.innerHTML = type;
+                td5.innerHTML = lowerprice;
+                td6.innerHTML = price;
+
+                // 新增後清空介面輸入框
+                document.querySelector('#manu').value = null;
+                document.querySelector('#type').value = null;
+                document.querySelector('#lowerprice').value = null;
+                document.querySelector('#price').value = null;
+
+                // 刪除鍵刪除單行
+                del.onclick = function () {
+                    this.parentNode.parentNode.remove();
+                    resetSerial();
+
+                }
+
+                // 刪除當行後計算序號的函式
+                const resetSerial = function () {
+                    // 拿到刪除後剩下的行們
+                    const rows = document.querySelectorAll('.ressection tr:not(:first-child)'); //偽類選擇器
+                    let count = 1;
+                    // 遍歷每一行
+                    for (const row of rows) {
+                        const cell = row.querySelector('td:nth-child(2)').innerHTML = count++; // 序號列重新賦值 
+                    }
+                    // 改變全域變數,讓新增的序號可以等於當前的順序
+                    serial = count;
+                }
+
+                //radio資訊帶入上方
+                rad.onclick = function () {
+                    const thisRow = this.parentElement.parentElement; // 拿到tr標籤
+                    const cells = thisRow.querySelectorAll('td'); // 從tr下拿到全部的td
+                    document.querySelector('#manu').value = cells[2].innerHTML;
+                    document.querySelector('#type').value = cells[3].innerHTML;
+                    document.querySelector('#lowerprice').value = cells[4].innerHTML;
+                    document.querySelector('#price').value = cells[5].innerHTML;
+
+                }
+
+            }
+
+            // 清空鍵清空全部
+            document.querySelector('#remove').onclick = function () {
+                const restable = document.querySelector('.ressection');
+                const rows = restable.rows; // rows HTMLCollection[]
+                for (let i = rows.length - 1; i > 0; i--) { //從最後一筆開始刪保留表頭
+                    restable.deleteRow(i);
+                }
+                serial = 1; //清空後序號從1開始計算
+
+            }
+
+            // 修改鍵修改radio checked行
+            document.querySelector('#update').onclick = function () {
+                let manu = document.querySelector('#manu').value;
+                let type = document.querySelector('#type').value;
+                let lowerprice = document.querySelector('#lowerprice').value;
+                let price = document.querySelector('#price').value;
+
+                const checkedRad = document.querySelector('input[name="radio"]:checked');
+                const row = checkedRad.parentElement.parentElement;
+                const cells = row.querySelectorAll('td');
+                if (!manu || !type) {
+                    alert('製造商與類別不可為空');
+                    return;
+                }
+                cells[2].innerHTML = manu;
+                cells[3].innerHTML = type;
+                cells[4].innerHTML = lowerprice;
+                cells[5].innerHTML = price;
+            }
+
+        };
+    </script>
+    <style>
+        table {
+            border-collapse: collapse;
+            border: 1px solid black;
+
+        }
+
+        tr,
+        td {
+            border-collapse: collapse;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .butsection {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .ressection {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td>製造商</td>
+            <td><input type="text" id="manu" /></td>
+            <td>類別</td>
+            <td><input type="text" id="type" /></td>
+
+        </tr>
+
+        <tr>
+            <td>底價</td>
+            <td><input type="text" id="lowerprice" /></td>
+            <td>售價</td>
+            <td><input type="text" id="price" /></td>
+
+        </tr>
+
+        <tr>
+            <td colspan="4">
+                <div class="butsection">
+                    <button id="insert">新增</button>
+                    <button id="update">修改</button>
+                    <button id="remove">清空</button>
+                </div>
+            </td>
+
+
+        </tr>
+    </table>
+    <div>
+        <table class="ressection">
+            <tr>
+                <td></td>
+                <td>序號</td>
+                <td>製造商</td>
+                <td>類別</td>
+                <td>底價</td>
+                <td>售價</td>
+                <td></td>
+            </tr>
+    </div>
+    </span>
+
+</body>
+
+</html>

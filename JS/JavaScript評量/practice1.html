@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript評量第一題</title>
+    <script type="text/javascript" src="HashMap.js"></script>
+    <script>
+        // 創建一個物件
+        const map = new HashMap();
+
+        window.onload = function () {
+
+            // put鍵
+            document.querySelector('#but1').onclick = function () {
+                let inputKey = document.querySelector('#key').value;
+                let inputVal = document.querySelector('#val').value;
+                let result = document.querySelector('#res');
+
+                // 建立result標籤的函式
+                const creatResult = function (ckey, cvalue) {
+                    const showres = document.createElement('p');
+                    showres.setAttribute('class', 'showres');
+                    showres.innerHTML = ckey + ':' + cvalue;
+                    return showres;
+
+                };
+
+                // 判斷條件
+                if (!inputKey) {
+                    alert('請輸入Key值');
+                    return;
+                };
+                if (map.contains(inputKey)) {
+                    alert('Key值不得重複');
+                    document.querySelector('#key').value = '';
+                    document.querySelector('#val').value = '';
+                    return;
+                };
+
+                // 放入map中
+                map.put(inputKey, inputVal);
+
+                result.innerHTML = "【RESULT】"
+
+                // 取得k,v (new出的自定義物件不能用for in)
+                const keys = map.keys();
+                for (const ekey of keys) {
+                    const eval = map.get(ekey);
+                    result.appendChild(creatResult(ekey, eval))
+                };
+
+                //清空介面輸入框
+                document.querySelector('#key').value = null;
+                document.querySelector('#val').value = null;
+
+            }
+
+            // clear鍵
+            document.querySelector('#but2').onclick = function () {
+                let inputKey = document.querySelector('#key').value;
+                let inputVal = document.querySelector('#val').value;
+                let result = document.querySelector('#res');
+                inputKey = '';
+                inputVal = '';
+                result.innerHTML = '';
+                map.clear();
+            }
+        };
+    </script>
+    <style>
+        span {
+            display: inline-block;
+            width: 70px;
+        }
+
+        .kv {
+            padding: 5px;
+        }
+
+        hr {
+            width: 50%;
+            margin-left: 0;
+        }
+
+        .pc {
+            display: inline-flex;
+            width: 40px;
+            padding: 10px;
+        }
+
+        .showres {
+            margin-left: 20px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="kv">
+        <span>KEY</span><input type="text" id="key" />
+    </div>
+    <div class="kv">
+        <span>VALUE</span><input type="text" id="val" />
+    </div>
+    <hr />
+    <div class="pc" id="but1"><button>PUT</button></div>
+    <div class="pc" id="but2"><button>CLEAR</button></div>
+    <hr />
+    <div id="res"></div>
+
+
+</body>
+
+</html>
