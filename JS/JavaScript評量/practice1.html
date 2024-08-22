@@ -14,7 +14,7 @@
 
             // put鍵
             document.querySelector('#butPut').onclick = function () {
-                let inputKey = document.querySelector('#key').value;
+                let inputKey = document.querySelector('#key').value.trim();
                 let result = document.querySelector('#res');
 
                 // 建立result標籤的函式
@@ -27,11 +27,11 @@
                 };
 
                 // 判斷條件
-                if (!inputKey.trim()) {
+                if (!inputKey) {
                     alert('請輸入Key值');
                     return;
                 };
-                if (map.contains(inputKey.trim())) {
+                if (map.contains(inputKey)) {
                     alert('Key值不得重複');
                     document.querySelector('#key').value = '';
                     document.querySelector('#val').value = '';

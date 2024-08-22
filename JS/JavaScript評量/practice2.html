@@ -29,7 +29,12 @@
                     return;
                 }
 
-                if (lowerPrice > price) {
+
+                // 價錢比較先轉換成Number
+                let lpNum = Number(lowerPrice);
+                let pNum = Number(price);
+
+                if (lpNum > pNum) {
                     alert('底價不得高於售價');
                     document.querySelector('#lowerPrice').value = '';
                     document.querySelector('#price').value = '';
@@ -129,25 +134,48 @@
             document.querySelector('#butUpdate').onclick = function () {
                 let manu = document.querySelector('#manu').value;
                 let type = document.querySelector('#type').value;
-                let lowerprice = document.querySelector('#lowerPrice').value;
+                let lowerPrice = document.querySelector('#lowerPrice').value;
                 let price = document.querySelector('#price').value;
                 if (!manu.trim() || !type.trim()) {
                     alert('製造商與類別不可為空');
                     return;
-                }
+                };
+
+                if (isNaN(lowerPrice) || isNaN(price)) {
+                    alert('底價和售價請輸入數字');
+                    document.querySelector('#lowerPrice').value = '';
+                    document.querySelector('#price').value = '';
+                    return;
+                };
+
+
+                // 價錢比較先轉換成Number
+                let lpNum = Number(lowerPrice);
+                let pNum = Number(price);
+
+                if (lpNum > pNum) {
+                    alert('底價不得高於售價');
+                    document.querySelector('#lowerPrice').value = '';
+                    document.querySelector('#price').value = '';
+                    return;
+                };
+
+
                 const checkedRad = document.querySelector('input[name="radio"]:checked');
                 if (!checkedRad) {
                     alert('請點選欲修改的選項');
                     return;
-                }
+                };
 
                 const row = checkedRad.parentElement.parentElement;
                 const cells = row.querySelectorAll('td');
 
                 cells[2].innerHTML = manu;
                 cells[3].innerHTML = type;
-                cells[4].innerHTML = lowerprice;
+                cells[4].innerHTML = lowerPrice;
                 cells[5].innerHTML = price;
+
+
             }
 
         };
