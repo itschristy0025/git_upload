@@ -6,20 +6,11 @@ let HashMap = function () {
         },
 
         keys: function () {
-            let ary = [];
-            for (const obkey in obj) {
-                ary.push(obkey);
-            }
-            return ary;
+            return Object.keys(obj);
         },
 
         contains: function (key) {
-            for (const obkey in obj) {
-                if (obkey === key) {
-                    return true;
-                }
-            }
-            return false;
+            return key in obj;
         },
 
         get: function (key) {
@@ -29,9 +20,6 @@ let HashMap = function () {
         clear: function () {
             obj = {};
         }
-
-
-
 
     }
 }

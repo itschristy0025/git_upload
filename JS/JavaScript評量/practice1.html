@@ -13,26 +13,25 @@
         window.onload = function () {
 
             // put鍵
-            document.querySelector('#but1').onclick = function () {
+            document.querySelector('#butPut').onclick = function () {
                 let inputKey = document.querySelector('#key').value;
-                let inputVal = document.querySelector('#val').value;
                 let result = document.querySelector('#res');
 
                 // 建立result標籤的函式
-                const creatResult = function (ckey, cvalue) {
-                    const showres = document.createElement('p');
-                    showres.setAttribute('class', 'showres');
-                    showres.innerHTML = ckey + ':' + cvalue;
-                    return showres;
+                const creatResult = function (cKey, cValue) {
+                    const showRes = document.createElement('p');
+                    showRes.setAttribute('class', 'showRes');
+                    showRes.innerHTML = cKey + ':' + cValue;
+                    return showRes;
 
                 };
 
                 // 判斷條件
-                if (!inputKey) {
+                if (!inputKey.trim()) {
                     alert('請輸入Key值');
                     return;
                 };
-                if (map.contains(inputKey)) {
+                if (map.contains(inputKey.trim())) {
                     alert('Key值不得重複');
                     document.querySelector('#key').value = '';
                     document.querySelector('#val').value = '';
@@ -40,9 +39,9 @@
                 };
 
                 // 放入map中
-                map.put(inputKey, inputVal);
+                map.put(inputKey, document.querySelector('#val').value);
 
-                result.innerHTML = "【RESULT】"
+                result.innerHTML = '【RESULT】';
 
                 // 取得k,v (new出的自定義物件不能用for in)
                 const keys = map.keys();
@@ -52,19 +51,16 @@
                 };
 
                 //清空介面輸入框
-                document.querySelector('#key').value = null;
-                document.querySelector('#val').value = null;
+                document.querySelector('#key').value = '';
+                document.querySelector('#val').value = '';
 
             }
 
             // clear鍵
-            document.querySelector('#but2').onclick = function () {
-                let inputKey = document.querySelector('#key').value;
-                let inputVal = document.querySelector('#val').value;
-                let result = document.querySelector('#res');
-                inputKey = '';
-                inputVal = '';
-                result.innerHTML = '';
+            document.querySelector('#butClear').onclick = function () {
+                document.querySelector('#key').value = '';
+                document.querySelector('#val').value = '';
+                document.querySelector('#res').innerHTML = '';
                 map.clear();
             }
         };
@@ -75,7 +71,7 @@
             width: 70px;
         }
 
-        .kv {
+        .keyVal {
             padding: 5px;
         }
 
@@ -84,13 +80,13 @@
             margin-left: 0;
         }
 
-        .pc {
+        .putClear {
             display: inline-flex;
             width: 40px;
             padding: 10px;
         }
 
-        .showres {
+        .showRes {
             margin-left: 20px;
             margin-bottom: 5px;
             margin-top: 5px;
@@ -99,15 +95,15 @@
 </head>
 
 <body>
-    <div class="kv">
+    <div class="keyVal">
         <span>KEY</span><input type="text" id="key" />
     </div>
-    <div class="kv">
+    <div class="keyVal">
         <span>VALUE</span><input type="text" id="val" />
     </div>
     <hr />
-    <div class="pc" id="but1"><button>PUT</button></div>
-    <div class="pc" id="but2"><button>CLEAR</button></div>
+    <div class="putClear" id="butPut"><button>PUT</button></div>
+    <div class="putClear" id="butClear"><button>CLEAR</button></div>
     <hr />
     <div id="res"></div>
 
